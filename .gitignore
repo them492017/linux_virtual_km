@@ -1,5 +1,8 @@
 # Binaries
-device
+client
+
+# Caches
+.cache/
 
 # Prerequisites
 *.d

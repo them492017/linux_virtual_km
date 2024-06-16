@@ -1,6 +1,8 @@
 # Binaries
 client
 server
+client_nox11
+server_nox11
 
 # Caches
 .cache/

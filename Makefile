@@ -4,39 +4,49 @@ SERVER_TARGET = server
 CC = gcc
 CFLAGS = -Wall -Werror -Wvla
 ASAN_FLAGS = -fsanitize=address -g
-
-# Check for X11 using pkg-config
-X11_LIBS := $(shell pkg-config --libs x11)
-
-ifeq ($(strip $(X11_LIBS)),)
-else
-	CFLAGS += -lX11 -DUSE_X11
-endif
+X11_FLAGS = -lX11 -DUSE_X11
 
 LIBDIR := lib
 SRCDIR := src
 BUILDDIR := build
+BUILDDIR_NOX11 := build_nox11
 
 SRCFILES := $(wildcard $(SRCDIR)/*.c)
 CLIENT_OBJFILES := $(filter-out $(BUILDDIR)/server.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
 SERVER_OBJFILES := $(filter-out $(BUILDDIR)/client.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
 
-.PHONY: all
-.PHONY: clean
+.PHONY: all clean nox11 clean_binaries
 
 ###############################################
 
 all: $(SERVER_TARGET) $(CLIENT_TARGET)
 
 $(SERVER_TARGET): $(SERVER_OBJFILES)
-	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
+	$(CC) $(CFLAGS) $(X11_FLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
 
 $(CLIENT_TARGET): $(CLIENT_OBJFILES)
-	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
+	$(CC) $(CFLAGS) $(X11_FLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
 
 $(BUILDDIR)/%.o : $(SRCDIR)/%.c
 	mkdir -p $(BUILDDIR)
+	$(CC) $(CFLAGS) $(X11_FLAGS) $(ASAN_FLAGS) -I$(LIBDIR) $^ -c -o $@
+
+###############################################
+
+nox11: $(CLIENT_TARGET)_nox11
+
+$(CLIENT_TARGET)_nox11: $(CLIENT_OBJFILES)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
+
+$(BUILDDIR_NOX11)/%.o : $(SRCDIR)/%.c
+	mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) $^ -c -o $@
 
+###############################################
+
+# clean_binaries:
+# 	rm $(CLIENT_TARGET) $(SERVER_TARGET)
+
 clean:
-	rm -rf $(BUILDDIR) $(CLIENT_TARGET) $(SERVER_TARGET)
+	rm -rf $(BUILDDIR) $(BUILDDIR_NOX11) $(CLIENT_TARGET) $(SERVER_TARGET) \
+		$(CLIENT_TARGET)_nox11 $(SERVER_TARGET)_nox11

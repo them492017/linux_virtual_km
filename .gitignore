@@ -1,5 +1,6 @@
 # Binaries
 client
+server
 
 # Caches
 .cache/

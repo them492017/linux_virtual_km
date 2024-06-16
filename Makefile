@@ -1,35 +1,34 @@
-TARGET = client
+TARGET1 = client
+TARGET2 = server
 
 CC = gcc
-CFLAGS = -Wall -Werror -Wvla
+CFLAGS = -Wall -Werror -Wvla -lX11
 ASAN_FLAGS = -fsanitize=address -g
-
-SRC = $(TARGET).c
-OBJ = $(SRC:.c=.o)
 
 LIBDIR := lib
 SRCDIR := src
 BUILDDIR := build
 
 SRCFILES := $(wildcard $(SRCDIR)/*.c)
-OBJFILES := $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES))
+OBJFILES1 := $(filter-out $(BUILDDIR)/server.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
+OBJFILES2 := $(filter-out $(BUILDDIR)/client.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
 
 .PHONY: all
 .PHONY: clean
 
 ###############################################
 
-all:$(TARGET)
+all: $(TARGET1) $(TARGET2)
 
-$(TARGET): $(OBJFILES)
+$(TARGET1): $(OBJFILES1)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
+
+$(TARGET2): $(OBJFILES2)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
 
 $(BUILDDIR)/%.o : $(SRCDIR)/%.c
 	mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) $^ -c -o $@
 
-run:
-	./$(TARGET)
-
 clean:
-	rm -rf $(BUILDDIR) $(GCOVDIR) $(TARGET) *.gcov *.gcda *.gcno
+	rm -rf $(BUILDDIR) $(TARGET1) $(TARGET2)

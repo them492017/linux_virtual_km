@@ -52,5 +52,23 @@
     "directory": "/home/martin/Desktop/code/projects/linux_virtual_kvm",
     "file": "/home/martin/Desktop/code/projects/linux_virtual_kvm/src/network.c",
     "output": "/home/martin/Desktop/code/projects/linux_virtual_kvm/build/network.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Werror",
+      "-Wvla",
+      "-fsanitize=address",
+      "-g",
+      "-Ilib",
+      "-c",
+      "-o",
+      "build/server.o",
+      "src/server.c"
+    ],
+    "directory": "/home/martin/Desktop/code/projects/linux_virtual_kvm",
+    "file": "/home/martin/Desktop/code/projects/linux_virtual_kvm/src/server.c",
+    "output": "/home/martin/Desktop/code/projects/linux_virtual_kvm/build/server.o"
   }
 ]

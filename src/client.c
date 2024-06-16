@@ -1,7 +1,7 @@
 #include "client.h"
 
 int main(void) {
-    int socket_fd = create_socket();
+    int socket_fd = create_incoming_socket();
     int device_fd = create_keyboard_device();
 
     if (socket_fd == -1) {
@@ -17,14 +17,6 @@ int main(void) {
     struct key_event_packet event = {0};
 
     sleep(1);
-
-    emit_key_press(device_fd, KEY_T);
-    emit_key_press(device_fd, KEY_E);
-    emit_key_press(device_fd, KEY_S);
-    emit_key_press(device_fd, KEY_T);
-    emit_key_press(device_fd, KEY_I);
-    emit_key_press(device_fd, KEY_N);
-    emit_key_press(device_fd, KEY_G);
 
     while (1) {
         if (receive_key_event(&event, socket_fd) == 0) {

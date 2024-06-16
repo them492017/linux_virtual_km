@@ -1,3 +1,6 @@
+#ifndef NETWORK_H
+#define NETWORK_H
+
 #define _POSIX_SOURCE
 #define _DEFAULT_SOURCE
 
@@ -22,3 +25,4 @@ struct sockaddr_in create_address(char* ip, int port);
 int receive_key_event(struct key_event_packet* event, int socket_fd);
 
 int send_key_event(struct key_event_packet* event, struct sockaddr_in* addr, int socket_fd);
+#endif /* ifndef NETWORK_H */

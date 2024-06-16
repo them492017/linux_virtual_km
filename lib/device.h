@@ -1,7 +1,7 @@
-#include <linux/uinput.h>
+#ifndef DEVICE_H
+#define DEVICE_H
 
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
+#include <linux/uinput.h>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -114,8 +114,6 @@
     -1, \
 }
 
-int keysym_to_uinput_keycode(KeySym keysym);
-
 int create_keyboard_device();
 
 void close_keyboard_device(int fd);
@@ -123,3 +121,5 @@ void close_keyboard_device(int fd);
 void emit(int fd, int type, int code, int val);
 
 void emit_key_press(int fd, int key_val);
+
+#endif

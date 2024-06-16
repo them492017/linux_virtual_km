@@ -3,6 +3,17 @@
 int main(void) {
     int socket_fd = create_socket();
     int device_fd = create_keyboard_device();
+
+    if (socket_fd == -1) {
+        printf("Error when creating socket\n");
+        return 1;
+    }
+
+    if (device_fd == -1) {
+        printf("Error when creating device\n");
+        return 1;
+    }
+
     struct key_event_packet event = {0};
 
     sleep(1);
@@ -17,7 +28,7 @@ int main(void) {
 
     while (1) {
         if (receive_key_event(&event, socket_fd) == 0) {
-            ; // do something
+            emit_key_press(device_fd, event.key); // TODO: maybe check key is valid first
         }
     }
 

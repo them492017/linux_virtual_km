@@ -17,10 +17,16 @@ int create_socket() {
         return -1;
     }
 
+    if (bind(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        perror("Bind failed");
+        return -1;
+    }
+
     return socket_fd;
 }
 
 int receive_key_event(struct key_event_packet* event, int socket_fd) {
+    printf("Receiving key event!\n");
     // struct sockaddr_in addr = {0};
     // size_t addr_len = sizeof(addr);
     ssize_t nbytes = recvfrom(socket_fd, event, sizeof(struct key_event_packet), \

@@ -1,6 +1,8 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
+#include "event.h"
+
 #include <linux/uinput.h>
 
 #include <unistd.h>
@@ -116,10 +118,14 @@
 
 int create_keyboard_device();
 
-void close_keyboard_device(int fd);
+int create_pointer_device();
+
+void close_device(int fd);
 
 void emit(int fd, int type, int code, int val);
 
-void emit_key_press(int fd, int key_val);
+void emit_key_event(int fd, struct key_event event);
+
+void emit_pointer_event(int fd, struct pointer_event event);
 
 #endif

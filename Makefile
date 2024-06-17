@@ -13,6 +13,7 @@ BUILDDIR_NOX11 := build_nox11
 
 SRCFILES := $(wildcard $(SRCDIR)/*.c)
 CLIENT_OBJFILES := $(filter-out $(BUILDDIR)/server.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
+CLIENT_OBJFILES_NOX11 := $(filter-out $(BUILDDIR_NOX11)/server.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR_NOX11)/%.o, $(SRCFILES)))
 SERVER_OBJFILES := $(filter-out $(BUILDDIR)/client.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
 
 .PHONY: all clean nox11 clean_binaries
@@ -35,11 +36,11 @@ $(BUILDDIR)/%.o : $(SRCDIR)/%.c
 
 nox11: $(CLIENT_TARGET)_nox11
 
-$(CLIENT_TARGET)_nox11: $(CLIENT_OBJFILES)
+$(CLIENT_TARGET)_nox11: $(CLIENT_OBJFILES_NOX11)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) -o $@ $^
 
 $(BUILDDIR_NOX11)/%.o : $(SRCDIR)/%.c
-	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR_NOX11)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) $^ -c -o $@
 
 ###############################################

@@ -11,19 +11,11 @@ int main(int argc, char** argv) {
 
     int socket_fd = create_outgoing_socket();
     struct sockaddr_in addr = create_address(ip, port);
-    int device_fd = create_keyboard_device();
 
     if (socket_fd == -1) {
         printf("Error when creating socket\n");
         return 1;
     }
-
-    if (device_fd == -1) {
-        printf("Error when creating device\n");
-        return 1;
-    }
-
-    struct key_event_packet key_event = {0};
 
     Display *display = XOpenDisplay(NULL);
     if (display == NULL) {
@@ -40,31 +32,30 @@ int main(int argc, char** argv) {
                 InputOnly, CopyFromParent, 0, NULL);
 
     // Select input events to listen for
-    XSelectInput(display, input_only_window, KeyPressMask | ButtonPressMask);
+    XSelectInput(display, input_only_window, KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask);
 
     // Map the window (make it receive events)
     XMapWindow(display, input_only_window);
 
     // Event loop
     XEvent event;
-    KeySym keysym;
+    struct event_packet packet = {0};
     while (1) {
         XNextEvent(display, &event);
         if (event.type == KeyPress) {
-            XLookupString(&event.xkey, NULL, 0, &keysym, NULL);
-            key_event.key = keysym_to_uinput_keycode(keysym);
-            send_key_event(&key_event, &addr, socket_fd);
-            // printf("first keysym: %lu", XLookupKeysym(&event.xkey, 0));
+            packet = make_key_packet(&event.xkey);
+            send_event(&packet, &addr, socket_fd);
+        } else if (event.type == MotionNotify) {
+            packet = make_pointer_packet(&event.xmotion);
+            send_event(&packet, &addr, socket_fd);
         } else if (event.type == ButtonPress) {
-            printf("Button pressed\n");
+            printf("Mouse button pressed\n");
         }
     }
 
     // Destroy the window and close the display
     XDestroyWindow(display, input_only_window);
     XCloseDisplay(display);
-
-    close_keyboard_device(device_fd);
 
     return 0;
 }

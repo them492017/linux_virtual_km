@@ -4,8 +4,9 @@ server
 client_nox11
 server_nox11
 
-# Caches
+# Clangd
 .cache/
+compile_commands.json
 
 # Prerequisites
 *.d

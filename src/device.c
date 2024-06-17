@@ -57,17 +57,30 @@ int create_pointer_device() {
         return -1;
     }
 
-    if (ioctl(fd, UI_SET_EVBIT, EV_ABS) == -1) {
+    if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0) {
+        perror("Error in ioctl");
+    }
+
+    if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0) {
+        perror("Error in ioctl");
+    }
+
+    if (ioctl(fd, UI_SET_EVBIT, EV_REL) == -1) {
         perror("Error in ioctl");
         close(fd);
         return -1;
     }
-    if (ioctl(fd, UI_SET_EVBIT, ABS_X) == -1) {
+    if (ioctl(fd, UI_SET_EVBIT, EV_SYN) == -1) {
         perror("Error in ioctl");
         close(fd);
         return -1;
     }
-    if (ioctl(fd, UI_SET_EVBIT, ABS_Y) == -1) {
+    if (ioctl(fd, UI_SET_RELBIT, REL_X) == -1) {
+        perror("Error in ioctl");
+        close(fd);
+        return -1;
+    }
+    if (ioctl(fd, UI_SET_RELBIT, REL_Y) == -1) {
         perror("Error in ioctl");
         close(fd);
         return -1;
@@ -126,7 +139,9 @@ void emit_key_event(int fd, struct key_event event) {
 }
 
 void emit_pointer_event(int fd, struct pointer_event event) {
-    emit(fd, EV_ABS, ABS_X, event.x);
-    emit(fd, EV_ABS, ABS_Y, event.y);
+    printf("Emitting pointer event to (%d, %d)\n", event.x, event.y);
+    emit(fd, EV_REL, REL_X, event.x);
+    emit(fd, EV_REL, REL_Y, event.y);
     emit(fd, EV_SYN, SYN_REPORT, 0);
+    usleep(15000);
 }

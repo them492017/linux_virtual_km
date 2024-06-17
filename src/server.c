@@ -20,7 +20,22 @@ int main(int argc, char** argv) {
     Display *display = XOpenDisplay(NULL);
     if (display == NULL) {
         fprintf(stderr, "Cannot open display\n");
-        exit(1);
+        return 1;
+    }
+
+    // Initialize XInput2 extension
+    int xi_opcode, xi_event, xi_error;
+    if (!XQueryExtension(display, "XInputExtension", &xi_opcode, &xi_event, &xi_error)) {
+        fprintf(stderr, "X Input extension not available\n");
+        return 1;
+    }
+
+    // TODO: check this makes sense
+    // Check for XInput2 version
+    int major = 2, minor = 0;
+    if (XIQueryVersion(display, &major, &minor) != Success) {
+        fprintf(stderr, "XInput2 not supported. Version %d.%d\n", major, minor);
+        return 1;
     }
 
     int screen = DefaultScreen(display);
@@ -40,13 +55,14 @@ int main(int argc, char** argv) {
     // Event loop
     XEvent event;
     struct event_packet packet = {0};
+    struct point prev_pos = {.x = -1, .y = -1};
     while (1) {
         XNextEvent(display, &event);
         if (event.type == KeyPress || event.type == KeyRelease) {
             packet = make_key_packet(&event.xkey);
             send_event(&packet, &addr, socket_fd);
         } else if (event.type == MotionNotify) {
-            packet = make_pointer_packet(&event.xmotion);
+            packet = make_pointer_packet(&event.xmotion, &prev_pos);
             send_event(&packet, &addr, socket_fd);
         } else if (event.type == ButtonPress) {
             printf("Mouse button pressed\n");

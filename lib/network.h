@@ -46,11 +46,6 @@ int create_incoming_socket();
 
 struct sockaddr_in create_address(char* ip, int port);
 
-// int receive_key_event(struct key_event* event, int socket_fd);
-// int receive_pointer_event(struct pointer_event* event, int socket_fd);
-// int send_key_event(struct key_event *event, struct sockaddr_in *addr, int socket_fd);
-// int send_pointer_event(struct pointer_event *event, struct sockaddr_in *addr, int socket_fd);
-
 int receive_event(struct event_packet *packet, int socket_fd);
 
 int send_event(struct event_packet *packet, struct sockaddr_in *addr, int socket_fd);
@@ -59,7 +54,7 @@ int send_event(struct event_packet *packet, struct sockaddr_in *addr, int socket
 
 struct event_packet make_key_packet(XKeyEvent* event);
 
-struct event_packet make_pointer_packet(XMotionEvent* event);
+struct event_packet make_pointer_packet(XMotionEvent* event, struct point* prev_pos);
 
 #endif
 

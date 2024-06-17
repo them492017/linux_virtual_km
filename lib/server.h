@@ -7,6 +7,7 @@
 
 #ifdef USE_X11
 #include <X11/Xutil.h>
+#include <X11/extensions/XInput2.h>
 #endif
 
 #include <stdlib.h>

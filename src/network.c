@@ -100,12 +100,23 @@ struct event_packet make_key_packet(XKeyEvent* event) {
     };
 }
 
-struct event_packet make_pointer_packet(XMotionEvent* event) {
+struct event_packet make_pointer_packet(XMotionEvent* event, struct point* prev_pos) {
+    int rel_x = 0;
+    int rel_y = 0;
+
+    if (prev_pos->x != -1 && prev_pos->y != -1) {
+        rel_x = event->x - prev_pos->x;
+        rel_y = event->y - prev_pos->y;
+    }
+
+    prev_pos->x = event->x;
+    prev_pos->y = event->y;
+
     return (struct event_packet) {
         .type = POINTER,
             .event = {.pointer = (struct pointer_event) {
-                .x = event->x,
-                .y = event->y,
+                .x = rel_x,
+                .y = rel_y,
             }},
     };
 }

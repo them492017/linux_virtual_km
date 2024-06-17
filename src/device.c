@@ -112,6 +112,7 @@ void emit(int fd, int type, int code, int val) {
 }
 
 void emit_key_event(int fd, struct key_event event) {
+    // printf("Emitting type/key: %d/%d\n", event.type, event.key);
     switch (event.type) {
         case PRESS:
             emit(fd, EV_KEY, event.key, 1);

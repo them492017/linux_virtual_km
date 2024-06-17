@@ -5,7 +5,9 @@
 #include "device.h"
 #include "x11_util.h"
 
+#ifdef USE_X11
 #include <X11/Xutil.h>
+#endif
 
 #include <stdlib.h>
 

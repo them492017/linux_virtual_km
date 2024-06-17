@@ -19,6 +19,8 @@ int main(void) {
 
     sleep(1);
 
+    printf("Starting event loop\n");
+
     while (1) {
         if (receive_event(&packet, socket_fd) == 0) {
             switch (packet.type) {

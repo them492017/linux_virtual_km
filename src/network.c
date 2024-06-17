@@ -1,4 +1,5 @@
 #include "network.h"
+#include "event.h"
 
 int create_outgoing_socket() {
     int socket_fd = -1;
@@ -82,10 +83,18 @@ struct event_packet make_key_packet(XKeyEvent* event) {
     KeySym keysym;
     XLookupString(event, NULL, 0, &keysym, NULL);
     int key = keysym_to_uinput_keycode(keysym);
+    enum key_event_type type;
+
+    if (event->type == KeyPress) {
+        type = PRESS;
+    } else {
+        type = RELEASE;
+    }
+
     return (struct event_packet) {
         .type = KEY,
             .event = {.key = (struct key_event) {
-                .type = event->type,
+                .type = type,
                 .key = key
             }},
     };

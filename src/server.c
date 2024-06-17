@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     struct event_packet packet = {0};
     while (1) {
         XNextEvent(display, &event);
-        if (event.type == KeyPress) {
+        if (event.type == KeyPress || event.type == KeyRelease) {
             packet = make_key_packet(&event.xkey);
             send_event(&packet, &addr, socket_fd);
         } else if (event.type == MotionNotify) {

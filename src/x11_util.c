@@ -31,6 +31,33 @@ int keysym_to_uinput_keycode(KeySym keysym) {
         case XK_y: return KEY_Y;
         case XK_z: return KEY_Z;
 
+        case XK_A: return KEY_A;
+        case XK_B: return KEY_B;
+        case XK_C: return KEY_C;
+        case XK_D: return KEY_D;
+        case XK_E: return KEY_E;
+        case XK_F: return KEY_F;
+        case XK_G: return KEY_G;
+        case XK_H: return KEY_H;
+        case XK_I: return KEY_I;
+        case XK_J: return KEY_J;
+        case XK_K: return KEY_K;
+        case XK_L: return KEY_L;
+        case XK_M: return KEY_M;
+        case XK_N: return KEY_N;
+        case XK_O: return KEY_O;
+        case XK_P: return KEY_P;
+        case XK_Q: return KEY_Q;
+        case XK_R: return KEY_R;
+        case XK_S: return KEY_S;
+        case XK_T: return KEY_T;
+        case XK_U: return KEY_U;
+        case XK_V: return KEY_V;
+        case XK_W: return KEY_W;
+        case XK_X: return KEY_X;
+        case XK_Y: return KEY_Y;
+        case XK_Z: return KEY_Z;
+
         case XK_1: return KEY_1;
         case XK_2: return KEY_2;
         case XK_3: return KEY_3;
@@ -41,6 +68,28 @@ int keysym_to_uinput_keycode(KeySym keysym) {
         case XK_8: return KEY_8;
         case XK_9: return KEY_9;
         case XK_0: return KEY_0;
+
+        case XK_exclam: return KEY_1;
+        case XK_at: return KEY_2;
+        case XK_numbersign: return KEY_3;
+        case XK_dollar: return KEY_4;
+        case XK_percent: return KEY_5;
+        case XK_asciicircum: return KEY_6;
+        case XK_ampersand: return KEY_7;
+        case XK_asterisk: return KEY_8;
+        case XK_parenleft: return KEY_9;
+        case XK_parenright: return KEY_0;
+
+        case XK_underscore: return KEY_MINUS;
+        case XK_plus: return KEY_EQUAL;
+        case XK_braceleft: return KEY_LEFTBRACE;
+        case XK_braceright: return KEY_RIGHTBRACE;
+        case XK_bar: return KEY_BACKSLASH;
+        case XK_colon: return KEY_SEMICOLON;
+        case XK_quotedbl: return KEY_APOSTROPHE;
+        case XK_less: return KEY_COMMA;
+        case XK_greater: return KEY_DOT;
+        case XK_question: return KEY_SLASH;
 
         case XK_Return: return KEY_ENTER;
         case XK_Escape: return KEY_ESC;
@@ -118,6 +167,7 @@ int keysym_to_uinput_keycode(KeySym keysym) {
 
         default: return -1;  // Unknown keysym
     }
+    // TODO: log keysyms that result in -1 to file for debugging or something
 }
 
 #endif

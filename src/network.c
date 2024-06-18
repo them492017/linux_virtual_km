@@ -1,5 +1,4 @@
 #include "network.h"
-#include <linux/input-event-codes.h>
 
 int create_outgoing_socket() {
     int socket_fd = -1;

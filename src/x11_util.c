@@ -1,5 +1,4 @@
 #include "x11_util.h"
-#include <X11/X.h>
 
 #ifdef USE_X11
 

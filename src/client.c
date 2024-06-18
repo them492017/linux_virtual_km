@@ -1,4 +1,33 @@
 #include "client.h"
+#include "device.h"
+#include <pthread.h>
+#include <unistd.h>
+
+pthread_mutex_t pointer_batch_lock;
+volatile struct pointer_event pointer_event_batch = {0};
+
+void pointer_event_batch_insert(volatile struct pointer_event* batch, pthread_mutex_t* lock, \
+        struct pointer_event event) {
+    pthread_mutex_lock(lock);
+    batch->x += event.x;
+    batch->y += event.y;
+    pthread_mutex_unlock(lock);
+}
+
+void* periodic_batch_flush(void* arg) {
+    int* pointer_fd = arg;
+
+    while (1) {
+        if (pointer_event_batch.x != 0 || pointer_event_batch.y != 0) {
+            pthread_mutex_lock(&pointer_batch_lock);
+            emit_pointer_event(*pointer_fd, pointer_event_batch);
+            pthread_mutex_unlock(&pointer_batch_lock);
+        }
+        usleep(20000);
+    }
+
+    return NULL;
+}
 
 int main(void) {
     int socket_fd = create_incoming_socket();
@@ -19,6 +48,11 @@ int main(void) {
 
     sleep(1);
 
+    // initialise mutex and thread
+    pthread_t pointer_thread;
+    pthread_mutex_init(&pointer_batch_lock, NULL);
+    pthread_create(&pointer_thread, NULL, periodic_batch_flush, &pointer_fd);
+
     printf("Starting event loop\n");
 
     while (1) {
@@ -28,7 +62,8 @@ int main(void) {
                     emit_key_event(keyboard_fd, packet.event.key); // TODO: maybe check key is valid first
                     break;
                 case POINTER:
-                    emit_pointer_event(pointer_fd, packet.event.pointer);
+                    pointer_event_batch_insert(&pointer_event_batch, &pointer_batch_lock, packet.event.pointer);
+                    // emit_pointer_event(pointer_fd, packet.event.pointer);
                     break;
             }
         }

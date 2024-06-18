@@ -116,7 +116,7 @@
     -1, \
 }
 
-#define MOUSE_SENS 4
+#define MOUSE_SENS 1
 
 int create_keyboard_device();
 

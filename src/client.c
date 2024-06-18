@@ -21,6 +21,8 @@ void* periodic_batch_flush(void* arg) {
         if (pointer_event_batch.x != 0 || pointer_event_batch.y != 0) {
             pthread_mutex_lock(&pointer_batch_lock);
             emit_pointer_event(*pointer_fd, pointer_event_batch);
+            pointer_event_batch.x = 0;
+            pointer_event_batch.y = 0;
             pthread_mutex_unlock(&pointer_batch_lock);
         }
         usleep(20000);

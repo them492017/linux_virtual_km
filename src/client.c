@@ -22,7 +22,7 @@ void* periodic_batch_flush(void* arg) {
             pointer_event_batch.y = 0;
             pthread_mutex_unlock(&pointer_batch_lock);
         }
-        usleep(20000);
+        usleep(POINTER_UPDATE_RATE);
     }
 
     return NULL;
@@ -34,12 +34,12 @@ int main(void) {
     int pointer_fd = create_pointer_device();
 
     if (socket_fd == -1) {
-        printf("Error when creating socket\n");
+        fprintf(stderr, "Error when creating socket\n");
         return 1;
     }
 
     if (keyboard_fd == -1) {
-        printf("Error when creating device\n");
+        fprintf(stderr, "Error when creating device\n");
         return 1;
     }
 

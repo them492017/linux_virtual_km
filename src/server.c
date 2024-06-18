@@ -7,13 +7,13 @@ int main(int argc, char** argv) {
     }
 
     char* ip = argv[1];
-    int port = atoi(argv[2]); // No error checking here (maybe rethink)
+    int port = atoi(argv[2]); // TODO: No error checking here (maybe rethink)
 
     int socket_fd = create_outgoing_socket();
     struct sockaddr_in addr = create_address(ip, port);
 
     if (socket_fd == -1) {
-        printf("Error when creating socket\n");
+        fprintf(stderr, "Error when creating socket\n");
         return 1;
     }
 
@@ -58,7 +58,6 @@ int main(int argc, char** argv) {
             packet = make_button_packet(&event.xbutton);
             send_event(&packet, &addr, socket_fd);
         }
-        // TODO: fix buffer overflow when scroll wheel is used
     }
 
     pointer_loop_stopped = 1;

@@ -168,12 +168,10 @@ void emit_button_event(int fd, struct button_event event) {
             break;
         case WHEEL:
             if (event.button == KEY_SCROLLUP) {
-                printf("mouse wheel up\n");
                 emit(fd, EV_REL, REL_WHEEL, 1);
                 emit(fd, EV_SYN, SYN_REPORT, 0);
             }
             if (event.button == KEY_SCROLLDOWN) {
-                printf("mouse wheel down\n");
                 emit(fd, EV_REL, REL_WHEEL, -1);
                 emit(fd, EV_SYN, SYN_REPORT, 0);
             }

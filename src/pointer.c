@@ -71,7 +71,7 @@ void* pointer_thread_start(void* arg) {
 
                     packet = make_pointer_packet(dx, dy);
                     send_event(&packet, addr, socket_fd);
-                    printf("Relative motion: dx = %f, dy = %f\n", dx, dy);
+                    // printf("Relative motion: dx = %f, dy = %f\n", dx, dy);
                 }
             }
         }

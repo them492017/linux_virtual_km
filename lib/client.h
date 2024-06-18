@@ -7,6 +7,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#define POINTER_UPDATE_RATE 20000
+
 int main(void);
 
 #endif

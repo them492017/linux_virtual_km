@@ -51,7 +51,7 @@ struct sockaddr_in create_address(char *ip, int port) {
 }
 
 int receive_event(struct event_packet *packet, int socket_fd) {
-    printf("Receiving event!\n");
+    // printf("Receiving event!\n");
     // struct sockaddr_in addr = {0};
     // size_t addr_len = sizeof(addr);
     ssize_t nbytes =

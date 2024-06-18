@@ -116,6 +116,8 @@
     -1, \
 }
 
+#define MOUSE_SENS 4
+
 int create_keyboard_device();
 
 int create_pointer_device();

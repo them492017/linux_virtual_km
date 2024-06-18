@@ -116,6 +116,8 @@
     BTN_LEFT, \
     BTN_MIDDLE, \
     BTN_RIGHT, \
+    KEY_SCROLLUP, \
+    KEY_SCROLLDOWN, \
     -1, \
 }
 

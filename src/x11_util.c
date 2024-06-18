@@ -175,8 +175,8 @@ int button_to_uinput_keycode(unsigned int button) {
         case Button1: return BTN_LEFT;
         case Button2: return BTN_SIDE;
         case Button3: return BTN_RIGHT;
-        // case Button4: return 4;
-        // case Button5: return 5;
+        case Button4: return KEY_SCROLLUP;
+        case Button5: return KEY_SCROLLDOWN;
         default: return -1;
     }
 }

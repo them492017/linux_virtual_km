@@ -1,13 +1,10 @@
 #include "client.h"
-#include "device.h"
-#include <pthread.h>
-#include <unistd.h>
 
 pthread_mutex_t pointer_batch_lock;
 volatile struct pointer_event pointer_event_batch = {0};
 
-void pointer_event_batch_insert(volatile struct pointer_event* batch, pthread_mutex_t* lock, \
-        struct pointer_event event) {
+void pointer_event_batch_insert(volatile struct pointer_event* batch, \
+        pthread_mutex_t* lock, struct pointer_event event) {
     pthread_mutex_lock(lock);
     batch->x += event.x;
     batch->y += event.y;
@@ -64,7 +61,8 @@ int main(void) {
                     emit_key_event(keyboard_fd, packet.event.key); // TODO: maybe check key is valid first
                     break;
                 case POINTER:
-                    pointer_event_batch_insert(&pointer_event_batch, &pointer_batch_lock, packet.event.pointer);
+                    pointer_event_batch_insert(&pointer_event_batch, \
+                            &pointer_batch_lock, packet.event.pointer);
                     // emit_pointer_event(pointer_fd, packet.event.pointer);
                     break;
             }

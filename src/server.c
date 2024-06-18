@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
                 InputOnly, CopyFromParent, 0, NULL);
 
     // Select input events to listen for
-    // XSelectInput(display, input_only_window, KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask);
-    XSelectInput(display, input_only_window, KeyPressMask | KeyReleaseMask | ButtonPressMask);
+    XSelectInput(display, input_only_window, KeyPressMask | KeyReleaseMask \
+            | ButtonPressMask | ButtonReleaseMask);
 
     // Map the window (make it receive events)
     XMapWindow(display, input_only_window);
@@ -49,17 +49,12 @@ int main(int argc, char** argv) {
     // Event loop
     XEvent event;
     struct event_packet packet = {0};
-    // struct point prev_pos = {.x = -1, .y = -1};
     while (1) {
         XNextEvent(display, &event);
         if (event.type == KeyPress || event.type == KeyRelease) {
             packet = make_key_packet(&event.xkey);
             send_event(&packet, &addr, socket_fd);
-        } else if (event.type == MotionNotify) {
-            // packet = make_pointer_packet(&event.xmotion, &prev_pos);
-            // send_event(&packet, &addr, socket_fd);
-            ;
-        } else if (event.type == ButtonPress) {
+        } else if (event.type == ButtonPress || event.type == ButtonRelease) {
             printf("Mouse button pressed\n");
             packet = make_button_packet(&event.xbutton);
             send_event(&packet, &addr, socket_fd);

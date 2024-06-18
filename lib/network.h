@@ -56,6 +56,8 @@ struct event_packet make_key_packet(XKeyEvent* event);
 
 struct event_packet make_pointer_packet(double dx, double dy);
 
+struct event_packet make_button_packet(XButtonEvent* event);
+
 #endif
 
 #endif /* ifndef NETWORK_H */

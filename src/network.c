@@ -1,4 +1,5 @@
 #include "network.h"
+#include <linux/input-event-codes.h>
 
 int create_outgoing_socket() {
     int socket_fd = -1;
@@ -105,6 +106,27 @@ struct event_packet make_pointer_packet(double dx, double dy) {
             .event = {.pointer = (struct pointer_event) {
                 .x = dx,
                 .y = dy,
+            }},
+    };
+}
+
+struct event_packet make_button_packet(XButtonEvent* event) {
+    // KeySym keysym;
+    // XLookupString(event, NULL, 0, &keysym, NULL);
+    // int key = keysym_to_uinput_keycode(keysym);
+    enum key_event_type type;
+
+    if (event->type == ButtonPress) {
+        type = PRESS;
+    } else {
+        type = RELEASE;
+    }
+
+    return (struct event_packet) {
+        .type = KEY,
+            .event = {.key = (struct key_event) {
+                .type = type,
+                .key = BTN_LEFT
             }},
     };
 }

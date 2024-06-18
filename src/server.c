@@ -61,7 +61,10 @@ int main(int argc, char** argv) {
             ;
         } else if (event.type == ButtonPress) {
             printf("Mouse button pressed\n");
+            packet = make_button_packet(&event.xbutton);
+            send_event(&packet, &addr, socket_fd);
         }
+        // TODO: fix buffer overflow when scroll wheel is used
     }
 
     pointer_loop_stopped = 1;

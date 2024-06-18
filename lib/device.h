@@ -113,6 +113,7 @@
     KEY_KPPLUS, \
     KEY_KPENTER, \
     KEY_KPEQUAL, \
+    BTN_LEFT, \
     -1, \
 }
 

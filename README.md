@@ -1,2 +1,2 @@
 # linux_virtual_kvm
-A software kvm switch for linux using the uinput kernel module
+A software km switch for linux using X11 and the uinput kernel module

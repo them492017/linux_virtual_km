@@ -27,16 +27,32 @@ int main(int argc, char** argv) {
     Window root = RootWindow(display, screen);
 
     // Create an InputOnly window
+    int attr_mask = CWEventMask | CWOverrideRedirect;
+    XSetWindowAttributes attrs = {
+        .event_mask = KeyPressMask | KeyReleaseMask \
+                        | ButtonPressMask | ButtonReleaseMask | FocusChangeMask,
+        .override_redirect = True,
+    };
+
     Window input_only_window =
         XCreateWindow(display, root, 100, 100, 400, 300, 0, CopyFromParent,
-                InputOnly, CopyFromParent, 0, NULL);
-
-    // Select input events to listen for
-    XSelectInput(display, input_only_window, KeyPressMask | KeyReleaseMask \
-            | ButtonPressMask | ButtonReleaseMask);
+                InputOnly, CopyFromParent, attr_mask, &attrs); // TODO: add error checking on these X calls
 
     // Map the window (make it receive events)
-    XMapWindow(display, input_only_window);
+    XMapWindow(display, input_only_window); // TODO: add error checking
+
+    if (XGrabKeyboard(display, input_only_window, True, GrabModeAsync, GrabModeAsync, CurrentTime) != GrabSuccess) {
+        fprintf(stderr, "Failed to grab keyboard\n");
+        XCloseDisplay(display);
+        return 1;
+    }
+
+    if (XGrabPointer(display, input_only_window, True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+                GrabModeAsync, GrabModeAsync, None, None, CurrentTime) != GrabSuccess) {
+        fprintf(stderr, "Failed to grab pointer\n");
+        XCloseDisplay(display);
+        return 1;
+    }
 
     // Start pointer thread
     pthread_t pointer_thread;
@@ -52,9 +68,11 @@ int main(int argc, char** argv) {
     while (1) {
         XNextEvent(display, &event);
         if (event.type == KeyPress || event.type == KeyRelease) {
+            printf("Key press\n");
             packet = make_key_packet(&event.xkey);
             send_event(&packet, &addr, socket_fd);
         } else if (event.type == ButtonPress || event.type == ButtonRelease) {
+            printf("Button press\n");
             packet = make_button_packet(&event.xbutton);
             send_event(&packet, &addr, socket_fd);
         }

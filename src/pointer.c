@@ -43,7 +43,7 @@ void* pointer_thread_start(void* arg) {
     int socket_fd = args->socket_fd;
     struct sockaddr_in* addr = args->addr;
 
-    Display *dpy = XOpenDisplay(NULL);
+    Display* dpy = XOpenDisplay(NULL);
     if (dpy == NULL) {
         fprintf(stderr, "Cannot open display\n");
         return NULL;
@@ -57,21 +57,25 @@ void* pointer_thread_start(void* arg) {
         XNextEvent(dpy, &event);
         XGenericEventCookie* cookie = &event.xcookie;
 
-        if (cookie->type == GenericEvent && cookie->extension == xi_opcode &&
-            XGetEventData(dpy, cookie)) {
+        if (cookie->type == GenericEvent && cookie->extension == xi_opcode \
+                && XGetEventData(dpy, cookie)) {
             if (cookie->evtype == XI_RawMotion) {
-                XIRawEvent *raw_event = (XIRawEvent *)cookie->data;
-                double *raw_values = raw_event->raw_values;
+                XIRawEvent* raw_event = (XIRawEvent* )cookie->data;
+                unsigned char* val_mask = raw_event->valuators.mask;
+                double* raw_values = raw_event->raw_values;
 
-                double dx = raw_values[0];
-                double dy = raw_values[1];
+                // check raw_values are set correctly
+                if (XIMaskIsSet(val_mask, 0) && XIMaskIsSet(val_mask, 1)) {
+                    double dx = raw_values[0];
+                    double dy = raw_values[1];
 
-                packet = make_pointer_packet(dx, dy);
-                send_event(&packet, addr, socket_fd);
-                printf("Relative motion: dx = %f, dy = %f\n", dx, dy);
+                    packet = make_pointer_packet(dx, dy);
+                    send_event(&packet, addr, socket_fd);
+                    printf("Relative motion: dx = %f, dy = %f\n", dx, dy);
+                }
             }
-            XFreeEventData(dpy, cookie);
         }
+        XFreeEventData(dpy, cookie);
     }
 
     return NULL;

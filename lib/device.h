@@ -114,6 +114,8 @@
     KEY_KPENTER, \
     KEY_KPEQUAL, \
     BTN_LEFT, \
+    BTN_MIDDLE, \
+    BTN_RIGHT, \
     -1, \
 }
 

@@ -111,9 +111,7 @@ struct event_packet make_pointer_packet(double dx, double dy) {
 }
 
 struct event_packet make_button_packet(XButtonEvent* event) {
-    // KeySym keysym;
-    // XLookupString(event, NULL, 0, &keysym, NULL);
-    // int key = keysym_to_uinput_keycode(keysym);
+    int button = button_to_uinput_keycode(event->button);
     enum key_event_type type;
 
     if (event->type == ButtonPress) {
@@ -126,7 +124,7 @@ struct event_packet make_button_packet(XButtonEvent* event) {
         .type = KEY,
             .event = {.key = (struct key_event) {
                 .type = type,
-                .key = BTN_LEFT
+                .key = button
             }},
     };
 }

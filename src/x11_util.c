@@ -1,4 +1,5 @@
 #include "x11_util.h"
+#include <X11/X.h>
 
 #ifdef USE_X11
 
@@ -168,6 +169,17 @@ int keysym_to_uinput_keycode(KeySym keysym) {
         default: return -1;  // Unknown keysym
     }
     // TODO: log keysyms that result in -1 to file for debugging or something
+}
+
+int button_to_uinput_keycode(unsigned int button) {
+    switch (button) {
+        case Button1: return BTN_LEFT;
+        case Button2: return BTN_SIDE;
+        case Button3: return BTN_RIGHT;
+        // case Button4: return 4;
+        // case Button5: return 5;
+        default: return -1;
+    }
 }
 
 #endif

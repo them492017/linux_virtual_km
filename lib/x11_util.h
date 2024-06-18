@@ -10,6 +10,8 @@
 
 int keysym_to_uinput_keycode(KeySym keysym);
 
+int button_to_uinput_keycode(unsigned int button);
+
 #endif
 
 #endif

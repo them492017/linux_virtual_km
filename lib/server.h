@@ -3,6 +3,7 @@
 
 #include "network.h"
 #include "device.h"
+#include "pointer.h"
 #include "x11_util.h"
 
 #ifdef USE_X11
@@ -11,6 +12,7 @@
 #endif
 
 #include <stdlib.h>
+#include <pthread.h>
 
 int main(int argc, char** argv);
 

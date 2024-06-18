@@ -4,7 +4,7 @@ SERVER_TARGET = server
 CC = gcc
 CFLAGS = -Wall -Werror -Wvla
 ASAN_FLAGS = -fsanitize=address -g
-X11_FLAGS = -lX11 -DUSE_X11
+X11_FLAGS = -lX11 -lXi -lpthread -DUSE_X11
 
 LIBDIR := lib
 SRCDIR := src

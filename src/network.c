@@ -1,5 +1,4 @@
 #include "network.h"
-#include "event.h"
 
 int create_outgoing_socket() {
     int socket_fd = -1;
@@ -100,23 +99,12 @@ struct event_packet make_key_packet(XKeyEvent* event) {
     };
 }
 
-struct event_packet make_pointer_packet(XMotionEvent* event, struct point* prev_pos) {
-    int rel_x = 0;
-    int rel_y = 0;
-
-    if (prev_pos->x != -1 && prev_pos->y != -1) {
-        rel_x = event->x - prev_pos->x;
-        rel_y = event->y - prev_pos->y;
-    }
-
-    prev_pos->x = event->x;
-    prev_pos->y = event->y;
-
+struct event_packet make_pointer_packet(double dx, double dy) {
     return (struct event_packet) {
         .type = POINTER,
             .event = {.pointer = (struct pointer_event) {
-                .x = rel_x,
-                .y = rel_y,
+                .x = dx,
+                .y = dy,
             }},
     };
 }

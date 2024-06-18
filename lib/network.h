@@ -54,7 +54,7 @@ int send_event(struct event_packet *packet, struct sockaddr_in *addr, int socket
 
 struct event_packet make_key_packet(XKeyEvent* event);
 
-struct event_packet make_pointer_packet(XMotionEvent* event, struct point* prev_pos);
+struct event_packet make_pointer_packet(double dx, double dy);
 
 #endif
 

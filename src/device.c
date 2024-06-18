@@ -139,7 +139,7 @@ void emit_key_event(int fd, struct key_event event) {
 }
 
 void emit_pointer_event(int fd, struct pointer_event event) {
-    printf("Emitting pointer event to (%d, %d)\n", event.x, event.y);
+    printf("Emitting pointer event to (%f, %f)\n", event.x, event.y);
     emit(fd, EV_REL, REL_X, event.x);
     emit(fd, EV_REL, REL_Y, event.y);
     emit(fd, EV_SYN, SYN_REPORT, 0);

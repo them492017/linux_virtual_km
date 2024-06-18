@@ -15,6 +15,11 @@ int create_keyboard_device() {
         close(fd);
         return -1;
     }
+    if (ioctl(fd, UI_SET_EVBIT, EV_REL) == -1) {
+        perror("Error in ioctl");
+        close(fd);
+        return -1;
+    }
 
     const int key_codes[] = KEY_CODES;
     int i = 0;
@@ -163,10 +168,12 @@ void emit_button_event(int fd, struct button_event event) {
             break;
         case WHEEL:
             if (event.button == KEY_SCROLLUP) {
+                printf("mouse wheel up\n");
                 emit(fd, EV_REL, REL_WHEEL, 1);
                 emit(fd, EV_SYN, SYN_REPORT, 0);
             }
             if (event.button == KEY_SCROLLDOWN) {
+                printf("mouse wheel down\n");
                 emit(fd, EV_REL, REL_WHEEL, -1);
                 emit(fd, EV_SYN, SYN_REPORT, 0);
             }

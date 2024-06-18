@@ -115,7 +115,7 @@ struct event_packet make_button_packet(XButtonEvent* event) {
 
     if (button == KEY_SCROLLUP || button == KEY_SCROLLDOWN) {
         type = WHEEL;
-    ] else if (event->type == ButtonPress) {
+    } else if (event->type == ButtonPress) {
         type = BUTTON_PRESS;
     } else {
         type = BUTTON_RELEASE;
@@ -123,7 +123,7 @@ struct event_packet make_button_packet(XButtonEvent* event) {
 
     return (struct event_packet) {
         .type = BUTTON,
-            .event = {.key = (struct button_event) {
+            .event = {.button = (struct button_event) {
                 .type = type,
                 .button = button
             }},

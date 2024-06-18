@@ -116,8 +116,6 @@
     BTN_LEFT, \
     BTN_MIDDLE, \
     BTN_RIGHT, \
-    KEY_SCROLLUP, \
-    KEY_SCROLLDOWN, \
     -1, \
 }
 
@@ -134,5 +132,7 @@ void emit(int fd, int type, int code, int val);
 void emit_key_event(int fd, struct key_event event);
 
 void emit_pointer_event(int fd, struct pointer_event event);
+
+void emit_button_event(int fd, struct button_event event);
 
 #endif

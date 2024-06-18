@@ -2,8 +2,8 @@
 #define EVENT_H
 
 enum key_event_type {
-    PRESS,
-    RELEASE,
+    KEY_PRESS,
+    KEY_RELEASE,
 };
 
 struct key_event {
@@ -12,7 +12,19 @@ struct key_event {
 };
 
 struct pointer_event {
-    double x, y; // TODO: rename / redefine struct
+    double x;
+    double y; // TODO: rename / redefine struct (should be int)
+};
+
+enum button_event_type {
+    BUTTON_PRESS,
+    BUTTON_RELEASE,
+    WHEEL,
+};
+
+struct button_event {
+    int button;
+    enum button_event_type type;
 };
 
 #endif

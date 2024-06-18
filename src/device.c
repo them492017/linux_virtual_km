@@ -28,9 +28,15 @@ int create_keyboard_device() {
         i++;
     }
 
+    if (ioctl(fd, UI_SET_RELBIT, REL_WHEEL) == -1) {
+        perror("Error in ioctl");
+        close(fd);
+        return -1;
+    }
+
     usetup.id.bustype = BUS_USB;
-    usetup.id.vendor = 0x1234; /* sample vendor */
-    usetup.id.product = 0x5678; /* sample product */
+    usetup.id.vendor = 0x1; /* sample vendor */
+    usetup.id.product = 0x1; /* sample product */
     strcpy(usetup.name, "Keyboard virtual device");
 
     if (ioctl(fd, UI_DEV_SETUP, &usetup) == -1) {
@@ -87,9 +93,9 @@ int create_pointer_device() {
     }
 
     usetup.id.bustype = BUS_USB;
-    usetup.id.vendor = 0x1234; /* sample vendor */
-    usetup.id.product = 0x5678; /* sample product */
-    strcpy(usetup.name, "Keyboard virtual device");
+    usetup.id.vendor = 0x1; /* sample vendor */
+    usetup.id.product = 0x1; /* sample product */
+    strcpy(usetup.name, "Mouse virtual device");
 
     if (ioctl(fd, UI_DEV_SETUP, &usetup) == -1) {
         perror("Error in ioctl");
@@ -127,11 +133,11 @@ void emit(int fd, int type, int code, int val) {
 void emit_key_event(int fd, struct key_event event) {
     // printf("Emitting type/key: %d/%d\n", event.type, event.key);
     switch (event.type) {
-        case PRESS:
+        case KEY_PRESS:
             emit(fd, EV_KEY, event.key, 1);
             emit(fd, EV_SYN, SYN_REPORT, 0);
             break;
-        case RELEASE:
+        case KEY_RELEASE:
             emit(fd, EV_KEY, event.key, 0);
             emit(fd, EV_SYN, SYN_REPORT, 0);
             break;
@@ -139,9 +145,31 @@ void emit_key_event(int fd, struct key_event event) {
 }
 
 void emit_pointer_event(int fd, struct pointer_event event) {
-    printf("Emitting pointer event to (%f, %f)\n", event.x, event.y);
+    // printf("Emitting pointer event to (%f, %f)\n", event.x, event.y);
     emit(fd, EV_REL, REL_X, MOUSE_SENS * event.x);
     emit(fd, EV_REL, REL_Y, MOUSE_SENS * event.y);
     emit(fd, EV_SYN, SYN_REPORT, 0);
-    usleep(15000);
+}
+
+void emit_button_event(int fd, struct button_event event) {
+    switch (event.type) {
+        case BUTTON_PRESS:
+            emit(fd, EV_KEY, event.button, 1);
+            emit(fd, EV_SYN, SYN_REPORT, 0);
+            break;
+        case BUTTON_RELEASE:
+            emit(fd, EV_KEY, event.button, 0);
+            emit(fd, EV_SYN, SYN_REPORT, 0);
+            break;
+        case WHEEL:
+            if (event.button == KEY_SCROLLUP) {
+                emit(fd, EV_REL, REL_WHEEL, 1);
+                emit(fd, EV_SYN, SYN_REPORT, 0);
+            }
+            if (event.button == KEY_SCROLLDOWN) {
+                emit(fd, EV_REL, REL_WHEEL, -1);
+                emit(fd, EV_SYN, SYN_REPORT, 0);
+            }
+            break;
+    }
 }

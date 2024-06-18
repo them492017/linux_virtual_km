@@ -66,7 +66,7 @@ int receive_event(struct event_packet *packet, int socket_fd) {
 }
 
 int send_event(struct event_packet *packet, struct sockaddr_in *addr, int socket_fd) {
-    printf("Sending event!\n");
+    // printf("Sending event!\n");
     if (sendto(socket_fd, packet, sizeof(*packet), 0,
                 (struct sockaddr *)addr, sizeof(*addr)) < 0) {
         perror("Error when sending event");
@@ -85,9 +85,9 @@ struct event_packet make_key_packet(XKeyEvent* event) {
     enum key_event_type type;
 
     if (event->type == KeyPress) {
-        type = PRESS;
+        type = KEY_PRESS;
     } else {
-        type = RELEASE;
+        type = KEY_RELEASE;
     }
 
     return (struct event_packet) {
@@ -111,19 +111,21 @@ struct event_packet make_pointer_packet(double dx, double dy) {
 
 struct event_packet make_button_packet(XButtonEvent* event) {
     int button = button_to_uinput_keycode(event->button);
-    enum key_event_type type;
+    enum button_event_type type;
 
-    if (event->type == ButtonPress) {
-        type = PRESS;
+    if (button == KEY_SCROLLUP || button == KEY_SCROLLDOWN) {
+        type = WHEEL;
+    ] else if (event->type == ButtonPress) {
+        type = BUTTON_PRESS;
     } else {
-        type = RELEASE;
+        type = BUTTON_RELEASE;
     }
 
     return (struct event_packet) {
-        .type = KEY,
-            .event = {.key = (struct key_event) {
+        .type = BUTTON,
+            .event = {.key = (struct button_event) {
                 .type = type,
-                .key = button
+                .button = button
             }},
     };
 }

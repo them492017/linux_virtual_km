@@ -63,7 +63,9 @@ int main(void) {
                 case POINTER:
                     pointer_event_batch_insert(&pointer_event_batch, \
                             &pointer_batch_lock, packet.event.pointer);
-                    // emit_pointer_event(pointer_fd, packet.event.pointer);
+                    break;
+                case BUTTON:
+                    emit_button_event(keyboard_fd, packet.event.button);
                     break;
             }
         }

@@ -28,11 +28,13 @@
 enum event_type {
     KEY,
     POINTER,
+    BUTTON,
 };
 
 union event {
     struct key_event key;
     struct pointer_event pointer;
+    struct button_event button;
 };
 
 struct event_packet {

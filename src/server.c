@@ -55,7 +55,6 @@ int main(int argc, char** argv) {
             packet = make_key_packet(&event.xkey);
             send_event(&packet, &addr, socket_fd);
         } else if (event.type == ButtonPress || event.type == ButtonRelease) {
-            printf("Mouse button pressed\n");
             packet = make_button_packet(&event.xbutton);
             send_event(&packet, &addr, socket_fd);
         }

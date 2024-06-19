@@ -59,6 +59,7 @@ void* pointer_thread_start(void* arg) {
     struct event_packet packet;
     while (!pointer_loop_stopped) {
         XNextEvent(dpy, &event);
+        debug("Pointer event received\n");
         XGenericEventCookie* cookie = &event.xcookie;
 
         if (cookie->type == GenericEvent && cookie->extension == xi_opcode \

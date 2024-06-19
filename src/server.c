@@ -49,8 +49,9 @@ int main(int argc, char** argv) {
     }
 
     if (XGrabPointer(display, input_only_window, True, \
-                ButtonPressMask | ButtonReleaseMask | PointerMotionMask, \
-                GrabModeAsync, GrabModeAsync, None, None, CurrentTime) != GrabSuccess) {
+                ButtonPressMask | ButtonReleaseMask, \
+                GrabModeAsync, GrabModeAsync, None, \
+                None, CurrentTime) != GrabSuccess) {
         fprintf(stderr, "Failed to grab pointer\n");
         XCloseDisplay(display);
         return 1;
@@ -97,6 +98,8 @@ int main(int argc, char** argv) {
     XCloseDisplay(display);
 
     pthread_join(pointer_thread, NULL);
+
+    // TODO: Need to release all keys that are being pressed on client
 
     return 0;
 }

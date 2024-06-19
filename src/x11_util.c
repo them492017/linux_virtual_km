@@ -165,7 +165,9 @@ int keysym_to_uinput_keycode(KeySym keysym) {
         case XK_KP_Enter: return KEY_KPENTER;
         case XK_KP_Equal: return KEY_KPEQUAL;
 
-        default: return -1;  // Unknown keysym
+        default: 
+            debugf("Unknown keysym: %lu\n", keysym);
+            return -1; // Unknown keysym
     }
     // TODO: log keysyms that result in -1 to file for debugging or something
 }
@@ -179,6 +181,40 @@ int button_to_uinput_keycode(unsigned int button) {
         case Button5: return KEY_SCROLLDOWN;
         default: return -1;
     }
+}
+
+int key_is_down(Display* dpy, char* str) {
+    KeySym keysym = XStringToKeysym(str);
+    int keycode = XKeysymToKeycode(dpy, keysym);
+
+    int target_byte = keycode / 8;
+    int target_bit = keycode % 8;
+    int target_mask = 1 << target_bit;
+
+    char keys[32] = {0};
+    XQueryKeymap(dpy, keys);
+
+    return keys[target_byte] & target_mask;
+}
+
+int keybind_pressed(Display* dpy, struct keybind keybind) {
+    if (keybind.meta && !key_is_down(dpy, "Super_L") && !key_is_down(dpy, "Super_R")) {
+        return 0;
+    }
+    if (keybind.control && !key_is_down(dpy, "Control_L") && !key_is_down(dpy, "Control_R")) {
+        return 0;
+    }
+    if (keybind.alt && !key_is_down(dpy, "Alt_L") && !key_is_down(dpy, "Alt_R")) {
+        return 0;
+    }
+    if (keybind.shift && !key_is_down(dpy, "Shift_L") && !key_is_down(dpy, "Shift_R")) {
+        return 0;
+    }
+    if (keybind.key && !key_is_down(dpy, (char[2]){keybind.key, 0})) {
+        return 0;
+    }
+
+    return 1;
 }
 
 #endif

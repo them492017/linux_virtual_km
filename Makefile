@@ -16,7 +16,11 @@ CLIENT_OBJFILES := $(filter-out $(BUILDDIR)/server.o, $(patsubst $(SRCDIR)/%.c,$
 CLIENT_OBJFILES_NOX11 := $(filter-out $(BUILDDIR_NOX11)/server.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR_NOX11)/%.o, $(SRCFILES)))
 SERVER_OBJFILES := $(filter-out $(BUILDDIR)/client.o, $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o, $(SRCFILES)))
 
-.PHONY: all clean nox11 clean_binaries
+ifneq ($(filter debug, $(MAKECMDGOALS)),)
+	CFLAGS += -DDEBUG
+endif
+
+.PHONY: all clean nox11 debug
 
 ###############################################
 
@@ -44,6 +48,9 @@ $(BUILDDIR_NOX11)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(LIBDIR) $^ -c -o $@
 
 ###############################################
+
+debug:
+	@:
 
 # clean_binaries:
 # 	rm $(CLIENT_TARGET) $(SERVER_TARGET)

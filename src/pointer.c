@@ -4,6 +4,10 @@
 
 volatile int pointer_loop_stopped = 0;
 
+void stop_pointer_thread() {
+    pointer_loop_stopped = 1;
+}
+
 int initialise_xinput(Display* dpy) {
     int xi_opcode, xi_event, xi_error;
     // Initialize the XInput2 extension
@@ -71,7 +75,7 @@ void* pointer_thread_start(void* arg) {
 
                     packet = make_pointer_packet(dx, dy);
                     send_event(&packet, addr, socket_fd);
-                    // printf("Relative motion: dx = %f, dy = %f\n", dx, dy);
+                    debugf("Relative motion: dx = %f, dy = %f\n", dx, dy);
                 }
             }
         }

@@ -136,7 +136,7 @@ void emit(int fd, int type, int code, int val) {
 }
 
 void emit_key_event(int fd, struct key_event event) {
-    // printf("Emitting type/key: %d/%d\n", event.type, event.key);
+    debugf("Emitting type/key: %d/%d\n", event.type, event.key);
     switch (event.type) {
         case KEY_PRESS:
             emit(fd, EV_KEY, event.key, 1);
@@ -150,13 +150,14 @@ void emit_key_event(int fd, struct key_event event) {
 }
 
 void emit_pointer_event(int fd, struct pointer_event event) {
-    // printf("Emitting pointer event to (%f, %f)\n", event.x, event.y);
+    debugf("Emitting pointer event: (%f, %f)\n", event.x, event.y);
     emit(fd, EV_REL, REL_X, MOUSE_SENS * event.x);
     emit(fd, EV_REL, REL_Y, MOUSE_SENS * event.y);
     emit(fd, EV_SYN, SYN_REPORT, 0);
 }
 
 void emit_button_event(int fd, struct button_event event) {
+    debugf("Emitting button event (type/buton): %d/%d\n", event.type, event.button);
     switch (event.type) {
         case BUTTON_PRESS:
             emit(fd, EV_KEY, event.button, 1);

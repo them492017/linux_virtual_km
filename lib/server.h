@@ -4,7 +4,9 @@
 #include "network.h"
 #include "device.h"
 #include "pointer.h"
+#include "debug.h"
 #include "x11_util.h"
+#include "config.h"
 
 #ifdef USE_X11
 #include <X11/Xutil.h>

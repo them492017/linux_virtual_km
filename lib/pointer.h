@@ -2,6 +2,7 @@
 #define POINTER_H
 
 #include "network.h"
+#include "debug.h"
 
 #include <stdio.h>
 
@@ -16,6 +17,8 @@ struct pointer_thread_args {
     struct sockaddr_in* addr;
     int socket_fd;
 };
+
+void stop_pointer_thread();
 
 int initialise_xinput(Display* dpy);
 

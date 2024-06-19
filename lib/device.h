@@ -2,6 +2,7 @@
 #define DEVICE_H
 
 #include "event.h"
+#include "debug.h"
 
 #include <linux/uinput.h>
 

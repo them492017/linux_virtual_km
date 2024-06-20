@@ -39,7 +39,7 @@ int main(void) {
     }
 
     if (keyboard_fd == -1) {
-        fprintf("Error when creating device\n");
+        fprintf(stderr, "Error when creating device\n");
         return 1;
     }
 

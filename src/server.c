@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     int screen = DefaultScreen(display);
     Window root = RootWindow(display, screen);
 
-    // Create an InputOnly window
+    /* // Create an InputOnly window
     int attr_mask = CWEventMask | CWOverrideRedirect;
     XSetWindowAttributes attrs = {
         .event_mask = KeyPressMask | KeyReleaseMask \
@@ -39,20 +39,11 @@ int main(int argc, char** argv) {
                 InputOnly, CopyFromParent, attr_mask, &attrs); // TODO: add error checking on these X calls
 
     // Map the window (make it receive events)
-    XMapWindow(display, input_only_window); // TODO: add error checking
+    XMapWindow(display, input_only_window); // TODO: add error checking */
 
-    if (XGrabKeyboard(display, input_only_window, True, GrabModeAsync, \
+    if (XGrabKeyboard(display, root, True, GrabModeAsync, \
                 GrabModeAsync, CurrentTime) != GrabSuccess) {
         fprintf(stderr, "Failed to grab keyboard\n");
-        XCloseDisplay(display);
-        return 1;
-    }
-
-    if (XGrabPointer(display, input_only_window, True, \
-                ButtonPressMask | ButtonReleaseMask, \
-                GrabModeAsync, GrabModeAsync, None, \
-                None, CurrentTime) != GrabSuccess) {
-        fprintf(stderr, "Failed to grab pointer\n");
         XCloseDisplay(display);
         return 1;
     }
@@ -94,7 +85,7 @@ int main(int argc, char** argv) {
     stop_pointer_thread();
 
     // Destroy the window and close the display
-    XDestroyWindow(display, input_only_window);
+    // XDestroyWindow(display, input_only_window);
     XCloseDisplay(display);
 
     pthread_join(pointer_thread, NULL);

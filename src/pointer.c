@@ -26,6 +26,15 @@ int initialise_xinput(Display* dpy) {
     Window root = DefaultRootWindow(dpy);
     select_xinput2_events(dpy, root);
 
+    if (XGrabPointer(dpy, root, True, \
+                ButtonPressMask | ButtonReleaseMask | PointerMotionMask, \
+                GrabModeAsync, GrabModeAsync, None, \
+                None, CurrentTime) != GrabSuccess) {
+        fprintf(stderr, "Failed to grab pointer\n");
+        XCloseDisplay(dpy);
+        return -1;
+    }
+
     return xi_opcode;
 }
 
@@ -57,6 +66,7 @@ void* pointer_thread_start(void* arg) {
 
     XEvent event;
     struct event_packet packet;
+    // TODO: handler mouse button events here
     while (!pointer_loop_stopped) {
         XNextEvent(dpy, &event);
         debug("Pointer event received\n");

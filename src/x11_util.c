@@ -169,7 +169,6 @@ int keysym_to_uinput_keycode(KeySym keysym) {
             debugf("Unknown keysym: %lu\n", keysym);
             return -1; // Unknown keysym
     }
-    // TODO: log keysyms that result in -1 to file for debugging or something
 }
 
 int button_to_uinput_keycode(unsigned int button) {

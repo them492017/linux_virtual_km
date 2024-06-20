@@ -1,5 +1,40 @@
 #include "server.h"
 
+int initialise_xinput(Display* display) {
+    int xi_opcode, xi_event, xi_error;
+    // Initialize the XInput2 extension
+    if (!XQueryExtension(display, "XInputExtension", &xi_opcode, &xi_event, &xi_error)) {
+        fprintf(stderr, "X Input extension not available\n");
+        return 1;
+    }
+
+    // Check for XInput2 version
+    int major = 2, minor = 0;
+    if (XIQueryVersion(display, &major, &minor) != Success) {
+        fprintf(stderr, "XInput2 not supported. Version %d.%d\n", major, minor);
+        return 1;
+    }
+
+    Window root = DefaultRootWindow(display);
+    select_xinput2_events(display, root);
+
+
+    return xi_opcode;
+}
+
+void select_xinput2_events(Display* display, Window win) {
+    // Select for raw motion events on the root window
+    XIEventMask evmask;
+    unsigned char mask[(XI_LASTEVENT + 7)/8] = { 0 };
+    evmask.deviceid = XIAllDevices;
+    evmask.mask_len = sizeof(mask);
+    evmask.mask = mask;
+    XISetMask(mask, XI_RawMotion);
+
+    XISelectEvents(display, win, &evmask, 1);
+    XFlush(display);
+}
+
 int main(int argc, char** argv) {
     if (argc != 3) {
         printf("Correct usage: ./server.c {IP} {PORT}\n");
@@ -23,7 +58,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    int screen = DefaultScreen(display);
+    int screen = DefaultScreen(display); // TODO: add error checking on these X calls
     Window root = RootWindow(display, screen);
 
     /* // Create an InputOnly window
@@ -36,10 +71,13 @@ int main(int argc, char** argv) {
 
     Window input_only_window = \
         XCreateWindow(display, root, 100, 100, 400, 300, 0, CopyFromParent, \
-                InputOnly, CopyFromParent, attr_mask, &attrs); // TODO: add error checking on these X calls
+                InputOnly, CopyFromParent, attr_mask, &attrs);
 
     // Map the window (make it receive events)
-    XMapWindow(display, input_only_window); // TODO: add error checking */
+    XMapWindow(display, input_only_window); */
+
+    // Initialise Xinput2
+    int xi_opcode = initialise_xinput(display);
 
     if (XGrabKeyboard(display, root, True, GrabModeAsync, \
                 GrabModeAsync, CurrentTime) != GrabSuccess) {
@@ -48,17 +86,18 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    if (XGrabPointer(display, root, True, \
+                ButtonPressMask | ButtonReleaseMask | PointerMotionMask, \
+                GrabModeAsync, GrabModeAsync, None, \
+                None, CurrentTime) != GrabSuccess) {
+        fprintf(stderr, "Failed to grab pointer\n");
+        XCloseDisplay(display);
+        return 1;
+    }
+
     // Read config file
     struct linuxkm_config config = {0};
     parse_config(&config);
-
-    // Start pointer thread
-    pthread_t pointer_thread;
-    struct pointer_thread_args arg = {
-        .socket_fd = socket_fd,
-        .addr = &addr,
-    };
-    pthread_create(&pointer_thread, NULL, pointer_thread_start, &arg);
 
     // Event loop
     XEvent event;
@@ -78,11 +117,30 @@ int main(int argc, char** argv) {
             debug("Button pressed\n");
             packet = make_button_packet(&event.xbutton);
             send_event(&packet, &addr, socket_fd);
+        } else if (event.type == GenericEvent) {
+            XGenericEventCookie* cookie = &event.xcookie;
+
+            if (cookie->type == GenericEvent && cookie->extension == xi_opcode \
+                    && XGetEventData(display, cookie)) {
+                if (cookie->evtype == XI_RawMotion) {
+                    XIRawEvent* raw_event = (XIRawEvent* )cookie->data;
+                    unsigned char* val_mask = raw_event->valuators.mask;
+                    double* raw_values = raw_event->raw_values;
+
+                    // check raw_values are set correctly
+                    if (XIMaskIsSet(val_mask, 0) && XIMaskIsSet(val_mask, 1)) {
+                        double dx = raw_values[0];
+                        double dy = raw_values[1];
+
+                        packet = make_pointer_packet(dx, dy);
+                        send_event(&packet, addr, socket_fd);
+                        debugf("Relative motion: dx = %f, dy = %f\n", dx, dy);
+                    }
+                }
+            }
+            XFreeEventData(display, cookie);
         }
     }
-
-    // Stop pointer thread
-    stop_pointer_thread();
 
     // Destroy the window and close the display
     // XDestroyWindow(display, input_only_window);

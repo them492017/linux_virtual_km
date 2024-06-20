@@ -10,6 +10,7 @@ int parse_config(struct linuxkm_config* config) {
             [Meta]+[Control]+[Alt]+[Shift]+Key
     */
     FILE* file = fopen("/home/martin/.config/linuxkm.conf", "r");
+    int line_no = 0;
     char buf[BUF_LEN];
 
     if (file == NULL) {
@@ -18,15 +19,19 @@ int parse_config(struct linuxkm_config* config) {
     }
 
     while (fgets(buf, BUF_LEN, file) != NULL) {
-        buf[strcspn(buf, "\n")] = 0;
+        buf[strcspn(buf, "\n")] = 0; // TODO: handle case where no '\n' is read
         char* key = strtok(buf, "=");
 
-        if (strncmp(key, EXIT_KEY_STR, EXIT_KEY_LEN) == 0) {
+        if (key == NULL) {
+            line_no++;
+            continue;
+        } else if (strncmp(key, EXIT_KEY_STR, EXIT_KEY_LEN) == 0) {
             char* val;
 
             while (1) {
                 val = strtok(NULL, "+");
 
+                // TODO: make this case insensitive
                 if (val == NULL) {
                     break;
                 } else if (strncmp(val, META_STR, META_LEN) == 0) {
@@ -40,19 +45,18 @@ int parse_config(struct linuxkm_config* config) {
                 } else if (strncmp(val, SHIFT_STR, SHIFT_LEN) == 0) {
                     config->exit_key.shift = true;
                 } else if (strlen(val) == 1) {
-                    config->exit_key.key = val[0]; // TODO: ensure lowercase??
+                    config->exit_key.key = val[0];
                 } else {
-                    // TODO: add line number
-                    fprintf(stderr, "Unknown keybind argument in config\n");
+                    fprintf(stderr, "Unknown keybind argument in config in %d\n", line_no);
                     return 1;
                 }
             }
-        } else if (key == NULL) {
-            continue;
         } else {
             fprintf(stderr, "Unknown config key: %s\n", key);
             return 1;
         }
+
+        line_no++;
     }
 
     return 0;

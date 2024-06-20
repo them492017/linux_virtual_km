@@ -18,7 +18,6 @@ int initialise_xinput(Display* display) {
     Window root = DefaultRootWindow(display);
     select_xinput2_events(display, root);
 
-
     return xi_opcode;
 }
 
@@ -133,7 +132,7 @@ int main(int argc, char** argv) {
                         double dy = raw_values[1];
 
                         packet = make_pointer_packet(dx, dy);
-                        send_event(&packet, addr, socket_fd);
+                        send_event(&packet, &addr, socket_fd);
                         debugf("Relative motion: dx = %f, dy = %f\n", dx, dy);
                     }
                 }
@@ -145,8 +144,6 @@ int main(int argc, char** argv) {
     // Destroy the window and close the display
     // XDestroyWindow(display, input_only_window);
     XCloseDisplay(display);
-
-    pthread_join(pointer_thread, NULL);
 
     // TODO: Need to release all keys that are being pressed on client
 

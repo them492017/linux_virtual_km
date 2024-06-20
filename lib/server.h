@@ -3,7 +3,6 @@
 
 #include "network.h"
 #include "device.h"
-#include "pointer.h"
 #include "debug.h"
 #include "x11_util.h"
 #include "config.h"
@@ -15,6 +14,10 @@
 
 #include <stdlib.h>
 #include <pthread.h>
+
+int initialise_xinput(Display* display);
+
+void select_xinput2_events(Display* display, Window win);
 
 int main(int argc, char** argv);
 

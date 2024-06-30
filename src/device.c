@@ -22,10 +22,21 @@ int create_keyboard_device() {
     }
 
     const int key_codes[] = KEY_CODES;
+    const int button_codes[] = BUTTON_CODES;
     int i = 0;
 
     while (key_codes[i] != -1) {
         if (ioctl(fd, UI_SET_KEYBIT, key_codes[i]) == -1) {
+            perror("Error in ioctl");
+            close(fd);
+            return -1;
+        }
+        i++;
+    }
+
+    i = 0;
+    while (button_codes[i] != -1) {
+        if (ioctl(fd, UI_SET_KEYBIT, button_codes[i]) == -1) {
             perror("Error in ioctl");
             close(fd);
             return -1;
@@ -177,5 +188,24 @@ void emit_button_event(int fd, struct button_event event) {
                 emit(fd, EV_SYN, SYN_REPORT, 0);
             }
             break;
+    }
+}
+
+void release_all(int fd) {
+    const int key_codes[] = KEY_CODES;
+    const int button_codes[] = BUTTON_CODES;
+    int i = 0;
+
+    while (key_codes[i] != -1) {
+        emit(fd, EV_KEY, key_codes[i], 0); // maybe use emit function
+        emit(fd, EV_SYN, SYN_REPORT, 0);
+        i++;
+    }
+
+    i = 0;
+    while (button_codes[i] != -1) {
+        emit(fd, EV_BUTTON, button_codes[i], 0); // maybe use emit function
+        emit(fd, EV_SYN, SYN_REPORT, 0);
+        i++;
     }
 }

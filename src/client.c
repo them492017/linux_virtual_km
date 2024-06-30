@@ -22,7 +22,7 @@ void* periodic_batch_flush(void* arg) {
             pointer_event_batch.y = 0;
             pthread_mutex_unlock(&pointer_batch_lock);
         }
-        usleep(POINTER_UPDATE_RATE);
+        usleep(POINTER_UPDATE_RATE); // maybe stop this from actively polling
     }
 
     return NULL;
@@ -42,6 +42,10 @@ int main(void) {
         fprintf(stderr, "Error when creating device\n");
         return 1;
     }
+
+    // create thread to manage tcp connection
+    pthread_t tcp_thread;
+    pthread_create(&tcp_thread, NULL, client_tcp_thread, NULL);
 
     struct event_packet packet = {0};
 
@@ -69,6 +73,9 @@ int main(void) {
                     break;
             }
         }
+        // if (!server_active()) {
+        //     release_all(keyboard_fd);
+        // }
     }
 
     close_device(keyboard_fd);

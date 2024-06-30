@@ -3,6 +3,7 @@
 
 #include "network.h"
 #include "device.h"
+#include "tcp.h"
 
 #include <pthread.h>
 #include <unistd.h>

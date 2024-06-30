@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="entry">
+    <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+        <property name="spacing">10</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <child>
+          <object class="GtkSwitch" id="client_switch">
+              <property name="halign">GTK_ALIGN_END</property>
+              <property name="hexpand">false</property>
+              <property name="vexpand">false</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEditableLabel" id="client_name">
+              <property name="text">Client</property>
+              <property name="halign">GTK_ALIGN_START</property>
+              <property name="hexpand">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="client_menu_button">
+            <property name="direction">GTK_ARROW_DOWN</property>
+            <property name="halign">GTK_ALIGN_CENTER</property>
+            <property name="valign">GTK_ALIGN_CENTER</property>
+            <property name="popover">client_popover_menu</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopover" id="client_popover_menu">
+    <child>
+      <object class="GtkGrid">
+        <property name="column-spacing">30</property>
+        <property name="row-spacing">5</property>
+        <child>
+            <object class="GtkLabel" id="ip_label">
+                <property name="label">IP Address</property>
+                <property name="halign">GTK_ALIGN_START</property>
+                <property name="hexpand">true</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+            </object>
+        </child>
+        <child>
+            <object class="GtkEntry" id="ip_entry">
+                <property name="text">127.0.0.1</property>
+                <property name="halign">GTK_ALIGN_END</property>
+                <property name="hexpand">false</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel" id="port_label">
+                <property name="label">Port</property>
+                <property name="halign">GTK_ALIGN_START</property>
+                <property name="hexpand">true</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">1</property>
+                </layout>
+            </object>
+        </child>
+        <child>
+            <object class="GtkEntry" id="port_entry">
+                <property name="text">7000</property>
+                <property name="halign">GTK_ALIGN_END</property>
+                <property name="hexpand">false</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">1</property>
+                </layout>
+            </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

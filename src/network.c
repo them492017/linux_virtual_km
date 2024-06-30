@@ -28,8 +28,7 @@ int create_incoming_socket() {
         return -1;
     }
 
-    if (bind(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) <
-            0) {
+    if (bind(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
         perror("Bind failed");
         return -1;
     }

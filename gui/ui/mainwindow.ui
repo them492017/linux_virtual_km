@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkApplicationWindow" id="win">
+    <property name="title">Linuxkm</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <property name="spacing">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <child>
+          <object class="GtkLabel" id="title_label">
+            <property name="width-chars">10</property>
+            <property name="label">Linuxkm</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <child>
+              <object class="GtkLabel" id="port_label">
+                 <property name="label">Port:</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="port_entry">
+                 <property name="text">7000</property>
+                 <!-- <property name="placeholder-text">Port Number</property> -->
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+            <property name="spacing">10</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <child>
+              <object class="GtkLabel" id="client_label">
+                <property name="label">Clients</property>
+                <property name="halign">GTK_ALIGN_START</property>
+                <property name="hexpand">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="add_client_button">
+                <property name="label">Add</property>
+                <property name="halign">GTK_ALIGN_END</property>
+                <property name="hexpand">false</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <!-- <child> -->
+        <!--   <object class="GtkScrolledWindow"> -->
+            <child>
+              <object class="GtkBox" id="client_box">
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="spacing">10</property>
+                <!-- Client entries go here -->
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+                <property name="spacing">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <child>
+                  <object class="GtkButton" id="options_button">
+                    <property name="label">Options</property>
+                    <property name="hexpand">false</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="hexpand">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="start_button">
+                    <property name="label">Start</property>
+                    <property name="hexpand">false</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          <!-- </object> -->
+        <!-- </child> -->
+      </object>
+    </child>
+  </object>
+</interface>
